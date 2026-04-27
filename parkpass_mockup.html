@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ParkPass — Premium parking. Pre-booked. Effortless.</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --pp-blue:     #1E5BFF;
+  --pp-blue-50:  #EEF3FF;
+  --pp-blue-700: #1948D6;
+  --pp-orange:   #C96A2B;
+  --pp-orange-50:#FBF1E9;
+  --pp-charcoal: #1A1F2B;
+  --pp-charcoal-2:#242A3A;
+  --pp-light:    #E6E9ED;
+  --pp-light-2:  #F4F6F8;
+  --pp-white:    #FFFFFF;
+  --pp-text:     #1A1F2B;
+  --pp-text-muted:#5A6275;
+}
+
+* { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+html, body { font-family: 'Manrope', sans-serif; color: var(--pp-text); background: var(--pp-white); }
+body { overflow-x: hidden; }
+.font-serif { font-family: 'Instrument Serif', serif; font-weight: 400; }
+
+/* Brand utility classes */
+.bg-pp-blue     { background-color: var(--pp-blue); }
+.bg-pp-blue-50  { background-color: var(--pp-blue-50); }
+.bg-pp-orange   { background-color: var(--pp-orange); }
+.bg-pp-orange-50{ background-color: var(--pp-orange-50); }
+.bg-pp-charcoal { background-color: var(--pp-charcoal); }
+.bg-pp-charcoal-2{background-color: var(--pp-charcoal-2); }
+.bg-pp-light    { background-color: var(--pp-light); }
+.bg-pp-light-2  { background-color: var(--pp-light-2); }
+.text-pp-blue     { color: var(--pp-blue); }
+.text-pp-orange   { color: var(--pp-orange); }
+.text-pp-charcoal { color: var(--pp-charcoal); }
+.text-pp-muted    { color: var(--pp-text-muted); }
+.border-pp-light  { border-color: var(--pp-light); }
+.border-pp-blue   { border-color: var(--pp-blue); }
+.ring-pp-blue    { --tw-ring-color: var(--pp-blue); }
+
+/* Screens */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: block; animation: fadeIn 280ms ease-out; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Staggered reveal for landing hero */
+.reveal { opacity: 0; transform: translateY(12px); animation: rise 700ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+.reveal-1 { animation-delay: 80ms;  }
+.reveal-2 { animation-delay: 200ms; }
+.reveal-3 { animation-delay: 320ms; }
+.reveal-4 { animation-delay: 460ms; }
+.reveal-5 { animation-delay: 600ms; }
+@keyframes rise { to { opacity: 1; transform: translateY(0); } }
+
+/* Pretty button */
+.btn-primary {
+  background: var(--pp-blue);
+  color: var(--pp-white);
+  border-radius: 10px;
+  padding: 14px 22px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  transition: transform 120ms ease, background 160ms ease, box-shadow 160ms ease;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 18px rgba(30,91,255,0.18);
+}
+.btn-primary:hover { background: var(--pp-blue-700); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--pp-charcoal);
+  border: 1px solid var(--pp-light);
+  border-radius: 10px;
+  padding: 14px 22px;
+  font-weight: 600;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+.btn-ghost:hover { border-color: var(--pp-charcoal); background: var(--pp-light-2); }
+
+.btn-dark {
+  background: var(--pp-charcoal);
+  color: var(--pp-white);
+  border-radius: 10px;
+  padding: 14px 22px;
+  font-weight: 600;
+  transition: transform 120ms ease, background 160ms ease;
+}
+.btn-dark:hover { background: var(--pp-charcoal-2); transform: translateY(-1px); }
+
+/* Card */
+.card {
+  background: var(--pp-white);
+  border: 1px solid var(--pp-light);
+  border-radius: 16px;
+  transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+.card-hover:hover {
+  border-color: rgba(30,91,255,0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px -16px rgba(26,31,43,0.18);
+}
+
+/* Inputs */
+.input {
+  width: 100%;
+  background: var(--pp-white);
+  border: 1px solid var(--pp-light);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font: inherit;
+  color: var(--pp-charcoal);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+.input:focus { outline: none; border-color: var(--pp-blue); box-shadow: 0 0 0 4px rgba(30,91,255,0.12); }
+.input::placeholder { color: #9099A8; }
+
+/* Slider — venue zone allocation */
+.zone-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: var(--pp-light);
+  border-radius: 999px;
+  outline: none;
+}
+.zone-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background: var(--pp-blue);
+  border: 4px solid #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(30,91,255,0.35);
+  transition: transform 120ms ease;
+}
+.zone-slider::-webkit-slider-thumb:hover { transform: scale(1.1); }
+.zone-slider::-moz-range-thumb {
+  width: 24px; height: 24px;
+  background: var(--pp-blue);
+  border: 4px solid #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(30,91,255,0.35);
+}
+
+/* Subtle background detail for landing hero */
+.hero-bg {
+  background-image:
+    radial-gradient(800px 380px at 85% -10%, rgba(30,91,255,0.10), transparent 60%),
+    radial-gradient(600px 280px at 0% 110%, rgba(201,106,43,0.07), transparent 60%);
+}
+
+/* Logo wordmark */
+.wordmark {
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+.wordmark .park { color: var(--pp-charcoal); }
+.wordmark .pass { color: var(--pp-blue); }
+.wordmark.on-dark .park { color: var(--pp-white); }
+
+/* QR-like SVG pattern */
+.qr-svg { background: white; padding: 12px; border-radius: 10px; }
+
+/* Progress bar */
+.progress-track {
+  background: var(--pp-light);
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--pp-blue), #2D6BFF);
+  border-radius: 999px;
+  transition: width 350ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Demo bar */
+.demo-bar {
+  background: var(--pp-charcoal);
+  color: rgba(255,255,255,0.92);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+/* Scrollbar polish (webkit) */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #C9CFD8; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #A5ADBB; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--pp-charcoal); color: white; padding: 12px 20px; border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2); opacity: 0; transition: all 260ms ease; z-index: 100;
+  font-size: 14px;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Pulse for live indicators */
+.pulse-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: #34D399;
+  box-shadow: 0 0 0 0 rgba(52,211,153,0.7); animation: pulse 1.8s infinite;
+}
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(52,211,153,0.7); }
+  70%  { box-shadow: 0 0 0 10px rgba(52,211,153,0); }
+  100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); }
+}
+
+/* Tab buttons */
+.tab {
+  padding: 8px 14px; border-radius: 999px; font-weight: 600; font-size: 14px;
+  color: var(--pp-text-muted); cursor: pointer; transition: all 160ms ease;
+  border: 1px solid transparent;
+}
+.tab.active { background: var(--pp-charcoal); color: var(--pp-white); }
+.tab:not(.active):hover { background: var(--pp-light-2); }
+
+/* Sidebar nav item */
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-radius: 10px; cursor: pointer;
+  font-weight: 500; color: var(--pp-text-muted); font-size: 14px;
+  transition: background 160ms ease, color 160ms ease;
+}
+.nav-item:hover { background: var(--pp-light-2); color: var(--pp-charcoal); }
+.nav-item.active { background: var(--pp-blue-50); color: var(--pp-blue); }
+
+</style>
+</head>
+
+<body>
+
+<!-- Persistent demo bar -->
+<div class="demo-bar w-full text-center py-1.5 px-4 flex items-center justify-center gap-3">
+  <span class="opacity-70 uppercase tracking-widest">Prototype</span>
+  <span class="opacity-40">·</span>
+  <span class="opacity-90">ParkPass capstone mockup</span>
+  <span class="opacity-40">·</span>
+  <button onclick="resetDemo()" class="opacity-70 hover:opacity-100 underline-offset-2 hover:underline">Reset</button>
+</div>
+
+<!-- =================================================================== -->
+<!-- SCREEN: LANDING -->
+<!-- =================================================================== -->
+<section id="screen-landing" class="screen active">
+
+  <!-- Top nav -->
+  <header class="hero-bg">
+    <div class="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="wordmark text-2xl"><span class="park">Park</span><span class="pass">Pass</span></div>
+      </div>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-pp-muted">
+        <a href="#how" class="hover:text-pp-charcoal transition">How it works</a>
+        <a href="#pilot" class="hover:text-pp-charcoal transition">The pilot</a>
+        <a href="#contact" class="hover:text-pp-charcoal transition">Contact</a>
+      </nav>
+    </div>
+
+    <!-- Hero -->
+    <div class="max-w-7xl mx-auto px-6 pt-12 pb-24 grid lg:grid-cols-12 gap-12 items-center">
+      <div class="lg:col-span-7">
+        <div class="reveal reveal-1 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-pp-blue-50 text-pp-blue text-xs font-semibold tracking-wider uppercase">
+          <span class="pulse-dot" style="background: var(--pp-blue);"></span>
+          Premium parking, reserved in advance
+        </div>
+
+        <h1 class="reveal reveal-2 mt-6 text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.02]">
+          Premium parking.<br>
+          Pre-booked.<br>
+          <span class="text-pp-blue">Effortless.</span>
+        </h1>
+
+        <p class="reveal reveal-3 mt-8 text-lg md:text-xl text-pp-muted max-w-2xl leading-relaxed">
+          ParkPass sits between your event ticket and your arrival. Attendees reserve a guaranteed parking space in 30 seconds. Venues turn a free, unmanaged asset into a new revenue stream, with no upfront cost.
+        </p>
+
+        <div class="reveal reveal-4 mt-10 flex flex-col sm:flex-row gap-3">
+          <button onclick="navigate('customer-events')" class="btn-primary inline-flex items-center justify-center gap-2">
+            I'm an attendee
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button onclick="navigate('venue-dashboard')" class="btn-dark inline-flex items-center justify-center gap-2">
+            I run a venue
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+
+        <p class="reveal reveal-5 mt-6 text-sm text-pp-muted">
+          BOOK · PARK · ENJOY
+        </p>
+      </div>
+
+      <!-- Hero visual: ticket-style card -->
+      <div class="lg:col-span-5 reveal reveal-3">
+        <div class="relative">
+          <!-- Decorative blob -->
+          <div class="absolute -top-6 -right-6 w-40 h-40 rounded-full" style="background: var(--pp-orange-50);"></div>
+          <div class="absolute -bottom-8 -left-8 w-52 h-52 rounded-full" style="background: var(--pp-blue-50);"></div>
+
+          <!-- Ticket card -->
+          <div class="relative bg-pp-charcoal text-white rounded-3xl p-8 shadow-2xl">
+            <div class="flex items-center justify-between mb-8">
+              <div class="wordmark on-dark text-xl"><span class="park">Park</span><span class="pass">Pass</span></div>
+              <div class="text-xs font-semibold tracking-widest text-pp-orange opacity-90">RESERVED</div>
+            </div>
+
+            <div class="flex items-end gap-6">
+              <div class="qr-svg">
+                <!-- Static QR-style SVG (decorative) -->
+                <svg width="110" height="110" viewBox="0 0 21 21" shape-rendering="crispEdges">
+                  <rect width="21" height="21" fill="white"/>
+                  <!-- Position markers -->
+                  <g fill="black">
+                    <rect x="0" y="0" width="7" height="7"/>
+                    <rect x="14" y="0" width="7" height="7"/>
+                    <rect x="0" y="14" width="7" height="7"/>
+                  </g>
+                  <g fill="white">
+                    <rect x="1" y="1" width="5" height="5"/>
+                    <rect x="15" y="1" width="5" height="5"/>
+                    <rect x="1" y="15" width="5" height="5"/>
+                  </g>
+                  <g fill="black">
+                    <rect x="2" y="2" width="3" height="3"/>
+                    <rect x="16" y="2" width="3" height="3"/>
+                    <rect x="2" y="16" width="3" height="3"/>
+                  </g>
+                  <!-- Pseudo-random data fills -->
+                  <g fill="black">
+                    <rect x="8" y="0" width="1" height="1"/><rect x="10" y="0" width="1" height="1"/><rect x="12" y="0" width="1" height="1"/>
+                    <rect x="9" y="1" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/>
+                    <rect x="8" y="2" width="1" height="1"/><rect x="10" y="2" width="1" height="1"/><rect x="13" y="2" width="1" height="1"/>
+                    <rect x="9" y="3" width="1" height="1"/><rect x="12" y="3" width="1" height="1"/>
+                    <rect x="8" y="4" width="1" height="1"/><rect x="11" y="4" width="1" height="1"/><rect x="13" y="4" width="1" height="1"/>
+                    <rect x="9" y="5" width="1" height="1"/><rect x="10" y="5" width="1" height="1"/>
+                    <rect x="8" y="6" width="1" height="1"/><rect x="12" y="6" width="1" height="1"/>
+                    <rect x="0" y="8" width="1" height="1"/><rect x="2" y="8" width="1" height="1"/><rect x="5" y="8" width="1" height="1"/><rect x="7" y="8" width="1" height="1"/><rect x="9" y="8" width="1" height="1"/><rect x="11" y="8" width="1" height="1"/><rect x="13" y="8" width="1" height="1"/><rect x="15" y="8" width="1" height="1"/><rect x="17" y="8" width="1" height="1"/><rect x="19" y="8" width="1" height="1"/>
+                    <rect x="1" y="9" width="1" height="1"/><rect x="3" y="9" width="1" height="1"/><rect x="6" y="9" width="1" height="1"/><rect x="8" y="9" width="1" height="1"/><rect x="10" y="9" width="1" height="1"/><rect x="14" y="9" width="1" height="1"/><rect x="16" y="9" width="1" height="1"/><rect x="20" y="9" width="1" height="1"/>
+                    <rect x="0" y="10" width="1" height="1"/><rect x="4" y="10" width="1" height="1"/><rect x="7" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/><rect x="12" y="10" width="1" height="1"/><rect x="13" y="10" width="1" height="1"/><rect x="18" y="10" width="1" height="1"/>
+                    <rect x="2" y="11" width="1" height="1"/><rect x="5" y="11" width="1" height="1"/><rect x="8" y="11" width="1" height="1"/><rect x="11" y="11" width="1" height="1"/><rect x="15" y="11" width="1" height="1"/><rect x="17" y="11" width="1" height="1"/><rect x="19" y="11" width="1" height="1"/>
+                    <rect x="0" y="12" width="1" height="1"/><rect x="3" y="12" width="1" height="1"/><rect x="6" y="12" width="1" height="1"/><rect x="9" y="12" width="1" height="1"/><rect x="12" y="12" width="1" height="1"/><rect x="14" y="12" width="1" height="1"/><rect x="16" y="12" width="1" height="1"/><rect x="20" y="12" width="1" height="1"/>
+                    <rect x="1" y="13" width="1" height="1"/><rect x="4" y="13" width="1" height="1"/><rect x="7" y="13" width="1" height="1"/><rect x="10" y="13" width="1" height="1"/><rect x="13" y="13" width="1" height="1"/><rect x="15" y="13" width="1" height="1"/><rect x="18" y="13" width="1" height="1"/>
+                    <rect x="8" y="14" width="1" height="1"/><rect x="10" y="14" width="1" height="1"/><rect x="13" y="14" width="1" height="1"/><rect x="15" y="14" width="1" height="1"/><rect x="17" y="14" width="1" height="1"/><rect x="19" y="14" width="1" height="1"/>
+                    <rect x="9" y="15" width="1" height="1"/><rect x="11" y="15" width="1" height="1"/><rect x="14" y="15" width="1" height="1"/><rect x="18" y="15" width="1" height="1"/><rect x="20" y="15" width="1" height="1"/>
+                    <rect x="8" y="16" width="1" height="1"/><rect x="10" y="16" width="1" height="1"/><rect x="12" y="16" width="1" height="1"/><rect x="13" y="16" width="1" height="1"/><rect x="16" y="16" width="1" height="1"/><rect x="19" y="16" width="1" height="1"/>
+                    <rect x="9" y="17" width="1" height="1"/><rect x="11" y="17" width="1" height="1"/><rect x="15" y="17" width="1" height="1"/><rect x="17" y="17" width="1" height="1"/><rect x="20" y="17" width="1" height="1"/>
+                    <rect x="8" y="18" width="1" height="1"/><rect x="10" y="18" width="1" height="1"/><rect x="13" y="18" width="1" height="1"/><rect x="14" y="18" width="1" height="1"/><rect x="16" y="18" width="1" height="1"/><rect x="18" y="18" width="1" height="1"/>
+                    <rect x="9" y="19" width="1" height="1"/><rect x="12" y="19" width="1" height="1"/><rect x="15" y="19" width="1" height="1"/><rect x="19" y="19" width="1" height="1"/>
+                    <rect x="8" y="20" width="1" height="1"/><rect x="10" y="20" width="1" height="1"/><rect x="11" y="20" width="1" height="1"/><rect x="13" y="20" width="1" height="1"/><rect x="17" y="20" width="1" height="1"/><rect x="20" y="20" width="1" height="1"/>
+                  </g>
+                </svg>
+              </div>
+              <div class="flex-1 pb-1">
+                <div class="text-xs uppercase tracking-widest opacity-60 mb-2">Reserved zone</div>
+                <div class="text-3xl font-bold mb-1">A · 47</div>
+                <div class="text-sm opacity-70">AED 20.00 · Confirmed</div>
+              </div>
+            </div>
+
+            <!-- Perforation -->
+            <div class="my-7 flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full" style="background: white; opacity: 0.05;"></div>
+              <div class="flex-1 border-t border-dashed border-white/15"></div>
+              <div class="w-3 h-3 rounded-full" style="background: white; opacity: 0.05;"></div>
+            </div>
+
+            <div class="space-y-1.5 text-sm">
+              <div class="flex justify-between"><span class="opacity-60">Plate</span><span class="font-medium">A · 12345</span></div>
+              <div class="flex justify-between"><span class="opacity-60">Event</span><span class="font-medium">Sample event</span></div>
+              <div class="flex justify-between"><span class="opacity-60">Gate opens</span><span class="font-medium">90 min before</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- How it works -->
+  <section id="how" class="bg-white py-24 border-t border-pp-light">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="max-w-2xl mb-16">
+        <div class="text-xs font-semibold tracking-widest uppercase text-pp-blue mb-3">How it works</div>
+        <h2 class="text-4xl md:text-5xl font-bold tracking-tight">From ticket purchase<br/>to parked car.</h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="card p-6">
+          <div class="text-pp-blue font-bold text-sm mb-6">01</div>
+          <div class="font-bold text-lg mb-2">Allocate</div>
+          <p class="text-sm text-pp-muted leading-relaxed">Venue marks a reserved zone and sets capacity for each event.</p>
+        </div>
+        <div class="card p-6">
+          <div class="text-pp-blue font-bold text-sm mb-6">02</div>
+          <div class="font-bold text-lg mb-2">Book</div>
+          <p class="text-sm text-pp-muted leading-relaxed">Attendee reserves a space online from the venue's confirmation email.</p>
+        </div>
+        <div class="card p-6">
+          <div class="text-pp-blue font-bold text-sm mb-6">03</div>
+          <div class="font-bold text-lg mb-2">Confirm</div>
+          <p class="text-sm text-pp-muted leading-relaxed">Venue sees live booking counts and remaining capacity in real time.</p>
+        </div>
+        <div class="card p-6">
+          <div class="text-pp-blue font-bold text-sm mb-6">04</div>
+          <div class="font-bold text-lg mb-2">Park</div>
+          <p class="text-sm text-pp-muted leading-relaxed">Staff scan the QR code at the reserved zone, plate number as fallback.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Two-sided value -->
+  <section class="bg-pp-light-2 py-24">
+    <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-6">
+      <div class="card p-10 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-1.5 h-full" style="background: var(--pp-blue);"></div>
+        <div class="text-xs font-semibold tracking-widest uppercase text-pp-blue mb-4">For attendees</div>
+        <h3 class="text-3xl font-bold mb-4 tracking-tight">Fast Parking. Guaranteed.</h3>
+        <p class="text-pp-muted leading-relaxed mb-8">A reserved space, a known location, and a faster path from car to gate. Reserve in 30 seconds, arrive on time, skip the search.</p>
+        <button onclick="navigate('customer-events')" class="btn-primary inline-flex items-center gap-2">
+          Try the booking flow
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <div class="card p-10 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-1.5 h-full" style="background: var(--pp-orange);"></div>
+        <div class="text-xs font-semibold tracking-widest uppercase text-pp-orange mb-4">For venues</div>
+        <h3 class="text-3xl font-bold mb-4 tracking-tight">Revenue from an asset you already own.</h3>
+        <p class="text-pp-muted leading-relaxed mb-8">Allocate a reserved zone, choose the size, and capture incremental revenue with zero upfront cost. No new infrastructure, no new staff.</p>
+        <button onclick="navigate('venue-dashboard')" class="btn-dark inline-flex items-center gap-2">
+          Open the venue dashboard
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- The pilot -->
+  <section id="pilot" class="bg-pp-charcoal text-white py-24">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="max-w-2xl mb-16">
+        <div class="text-xs font-semibold tracking-widest uppercase text-pp-blue mb-3" style="color: #6E94FF;">The pilot</div>
+        <h2 class="text-4xl md:text-5xl font-bold tracking-tight">One flat price.<br/>One simple split.</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-px bg-white/10 rounded-2xl overflow-hidden">
+        <div class="bg-pp-charcoal p-10">
+          <div class="text-5xl font-bold mb-3 text-pp-blue" style="color: #6E94FF;">AED 20</div>
+          <div class="text-sm uppercase tracking-widest opacity-70 mb-3">Per reservation, flat</div>
+          <p class="text-sm opacity-70 leading-relaxed">Low enough to feel frictionless against a typical AED 300 to 500 ticket. High enough to signal a real product.</p>
+        </div>
+        <div class="bg-pp-charcoal p-10">
+          <div class="text-5xl font-bold mb-3" style="color: #FFB286;">80 / 20</div>
+          <div class="text-sm uppercase tracking-widest opacity-70 mb-3">Revenue split</div>
+          <p class="text-sm opacity-70 leading-relaxed">The venue keeps AED 16 per booking, ParkPass takes AED 4. No upfront fees, no minimum volume.</p>
+        </div>
+        <div class="bg-pp-charcoal p-10">
+          <div class="text-5xl font-bold mb-3 opacity-90">AED 0</div>
+          <div class="text-sm uppercase tracking-widest opacity-70 mb-3">Venue cost</div>
+          <p class="text-sm opacity-70 leading-relaxed">No new infrastructure, no incremental staff. Every dirham earned through ParkPass is fully incremental.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact" class="bg-pp-charcoal text-white border-t border-white/10 py-12">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div>
+        <div class="wordmark on-dark text-2xl mb-2"><span class="park">Park</span><span class="pass">Pass</span></div>
+        <div class="text-xs uppercase tracking-widest opacity-60">Book. Park. Enjoy.</div>
+      </div>
+      <div class="text-sm opacity-60">
+        Capstone prototype · Abu Dhabi · 2026
+      </div>
+    </div>
+  </footer>
+
+</section>
+
+<!-- =================================================================== -->
+<!-- APP HEADER (shared by customer + venue screens) -->
+<!-- =================================================================== -->
+<template id="tpl-app-header">
+  <header class="bg-white border-b border-pp-light sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <button onclick="navigate('landing')" class="wordmark text-xl"><span class="park">Park</span><span class="pass">Pass</span></button>
+        <span class="text-pp-light">|</span>
+        <span data-mode-label class="text-sm font-medium text-pp-muted"></span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div data-mode-pill class="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold"></div>
+        <button onclick="switchMode()" class="text-sm font-semibold text-pp-charcoal hover:text-pp-blue transition flex items-center gap-1.5">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17 4 14m0 0 3-3m-3 3h11a4 4 0 0 0 0-8h-1m-7-4 3 3m0 0-3 3m3-3H6a4 4 0 0 0 0 8h1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-switch-label></span>
+        </button>
+      </div>
+    </div>
+  </header>
+</template>
+
+<!-- =================================================================== -->
+<!-- SCREEN: CUSTOMER EVENTS LIST -->
+<!-- =================================================================== -->
+<section id="screen-customer-events" class="screen bg-pp-light-2">
+  <div data-app-header></div>
+
+  <div class="max-w-5xl mx-auto px-6 py-12">
+    <div class="mb-10">
+      <div class="text-xs font-semibold tracking-widest uppercase text-pp-blue mb-2">Reserve your parking</div>
+      <h1 class="text-4xl font-bold tracking-tight mb-2">Pick an event.</h1>
+      <p class="text-pp-muted">Normally you arrive here from a link in your ticket confirmation email. For the demo, browse all events with ParkPass available.</p>
+    </div>
+
+    <div id="customer-events-list" class="grid md:grid-cols-2 gap-5">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<!-- SCREEN: CUSTOMER BOOKING -->
+<!-- =================================================================== -->
+<section id="screen-customer-book" class="screen bg-pp-light-2">
+  <div data-app-header></div>
+
+  <div class="max-w-3xl mx-auto px-6 py-12">
+    <button onclick="navigate('customer-events')" class="text-sm font-medium text-pp-muted hover:text-pp-charcoal transition flex items-center gap-1.5 mb-6">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      All events
+    </button>
+
+    <div class="grid lg:grid-cols-5 gap-6">
+      <!-- Event summary + form -->
+      <div class="lg:col-span-3">
+        <div class="card p-8">
+          <div class="text-xs font-semibold tracking-widest uppercase text-pp-blue mb-2">Reserve parking</div>
+          <h1 id="book-event-title" class="text-2xl font-bold mb-1 tracking-tight"></h1>
+          <p id="book-event-meta" class="text-sm text-pp-muted mb-8"></p>
+
+          <div class="space-y-5">
+            <div>
+              <label class="block text-sm font-semibold mb-2">Full name</label>
+              <input id="input-name" type="text" class="input" placeholder="Your full name" value="" maxlength="60" />
+              <p class="text-xs text-pp-muted mt-1.5">Used for the reservation record and venue-side verification.</p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold mb-2">Vehicle plate number</label>
+              <input id="input-plate" type="text" class="input" placeholder="A · 12345" value="" maxlength="20" />
+              <p class="text-xs text-pp-muted mt-1.5">Used as fallback if the QR scan fails on event day.</p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold mb-2">Email address</label>
+              <input id="input-email" type="email" class="input" placeholder="you@example.com" value="" />
+              <p class="text-xs text-pp-muted mt-1.5">We'll send your QR pass and event-day instructions here.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 bg-pp-blue-50 border border-pp-blue/20 rounded-2xl p-5 flex gap-3">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10" stroke="var(--pp-blue)" stroke-width="2"/><path d="M12 8v4m0 4h.01" stroke="var(--pp-blue)" stroke-width="2" stroke-linecap="round"/></svg>
+          <div class="text-sm text-pp-charcoal leading-relaxed">
+            <strong>Hold policy.</strong> Your space is held until 30 minutes after the event start time. Plate number serves as fallback if the QR scan fails.
+          </div>
+        </div>
+      </div>
+
+      <!-- Order summary -->
+      <div class="lg:col-span-2">
+        <div class="card p-6 sticky top-24">
+          <div class="text-xs font-semibold tracking-widest uppercase text-pp-muted mb-4">Order summary</div>
+
+          <div class="flex justify-between items-center py-3 border-b border-pp-light">
+            <span class="text-sm">Reserved parking</span>
+            <span class="font-semibold">AED 20.00</span>
+          </div>
+          <div class="flex justify-between items-center py-3 border-b border-pp-light">
+            <span class="text-sm text-pp-muted">Booking fee</span>
+            <span class="font-semibold text-pp-muted">AED 0.00</span>
+          </div>
+          <div class="flex justify-between items-center py-4">
+            <span class="font-bold">Total</span>
+            <span class="text-2xl font-bold">AED 20.00</span>
+          </div>
+
+          <button id="btn-pay" onclick="completeBooking()" class="btn-primary w-full justify-center inline-flex items-center gap-2 mt-3">
+            <span id="btn-pay-text">Pay AED 20</span>
+            <svg id="btn-pay-spinner" class="hidden animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="40 60" stroke-linecap="round"/></svg>
+          </button>
+          <p class="text-xs text-pp-muted text-center mt-3">By confirming you accept ParkPass terms.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<!-- SCREEN: CUSTOMER PASS -->
+<!-- =================================================================== -->
+<section id="screen-customer-pass" class="screen bg-pp-light-2">
+  <div data-app-header></div>
+
+  <div class="max-w-3xl mx-auto px-6 py-12">
+    <div class="text-center mb-10">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-pp-blue text-white mb-4">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5L20 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h1 class="text-4xl font-bold tracking-tight mb-2">You're set.</h1>
+      <p id="pass-confirmation-text" class="text-pp-muted"></p>
+    </div>
+
+    <!-- Ticket / pass card -->
+    <div class="bg-pp-charcoal text-white rounded-3xl overflow-hidden shadow-2xl">
+      <div class="p-8">
+        <div class="flex items-center justify-between mb-8">
+          <div class="wordmark on-dark text-xl"><span class="park">Park</span><span class="pass">Pass</span></div>
+          <div class="text-xs font-semibold tracking-widest text-pp-orange opacity-90">CONFIRMED</div>
+        </div>
+
+        <div class="flex items-end gap-6 mb-8">
+          <div class="qr-svg">
+            <svg width="120" height="120" viewBox="0 0 21 21" shape-rendering="crispEdges">
+              <rect width="21" height="21" fill="white"/>
+              <g fill="black"><rect x="0" y="0" width="7" height="7"/><rect x="14" y="0" width="7" height="7"/><rect x="0" y="14" width="7" height="7"/></g>
+              <g fill="white"><rect x="1" y="1" width="5" height="5"/><rect x="15" y="1" width="5" height="5"/><rect x="1" y="15" width="5" height="5"/></g>
+              <g fill="black"><rect x="2" y="2" width="3" height="3"/><rect x="16" y="2" width="3" height="3"/><rect x="2" y="16" width="3" height="3"/></g>
+              <g fill="black">
+                <rect x="8" y="0" width="1" height="1"/><rect x="11" y="0" width="1" height="1"/><rect x="13" y="0" width="1" height="1"/>
+                <rect x="9" y="1" width="1" height="1"/><rect x="12" y="1" width="1" height="1"/>
+                <rect x="8" y="2" width="1" height="1"/><rect x="10" y="2" width="1" height="1"/><rect x="13" y="2" width="1" height="1"/>
+                <rect x="9" y="3" width="1" height="1"/><rect x="11" y="3" width="1" height="1"/>
+                <rect x="8" y="4" width="1" height="1"/><rect x="12" y="4" width="1" height="1"/><rect x="13" y="4" width="1" height="1"/>
+                <rect x="9" y="5" width="1" height="1"/><rect x="11" y="5" width="1" height="1"/>
+                <rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/>
+                <rect x="0" y="8" width="1" height="1"/><rect x="3" y="8" width="1" height="1"/><rect x="5" y="8" width="1" height="1"/><rect x="8" y="8" width="1" height="1"/><rect x="10" y="8" width="1" height="1"/><rect x="12" y="8" width="1" height="1"/><rect x="15" y="8" width="1" height="1"/><rect x="18" y="8" width="1" height="1"/><rect x="20" y="8" width="1" height="1"/>
+                <rect x="1" y="9" width="1" height="1"/><rect x="4" y="9" width="1" height="1"/><rect x="7" y="9" width="1" height="1"/><rect x="9" y="9" width="1" height="1"/><rect x="11" y="9" width="1" height="1"/><rect x="14" y="9" width="1" height="1"/><rect x="17" y="9" width="1" height="1"/><rect x="19" y="9" width="1" height="1"/>
+                <rect x="2" y="10" width="1" height="1"/><rect x="5" y="10" width="1" height="1"/><rect x="8" y="10" width="1" height="1"/><rect x="12" y="10" width="1" height="1"/><rect x="13" y="10" width="1" height="1"/><rect x="16" y="10" width="1" height="1"/><rect x="20" y="10" width="1" height="1"/>
+                <rect x="0" y="11" width="1" height="1"/><rect x="3" y="11" width="1" height="1"/><rect x="6" y="11" width="1" height="1"/><rect x="10" y="11" width="1" height="1"/><rect x="14" y="11" width="1" height="1"/><rect x="18" y="11" width="1" height="1"/>
+                <rect x="2" y="12" width="1" height="1"/><rect x="4" y="12" width="1" height="1"/><rect x="7" y="12" width="1" height="1"/><rect x="11" y="12" width="1" height="1"/><rect x="13" y="12" width="1" height="1"/><rect x="15" y="12" width="1" height="1"/><rect x="17" y="12" width="1" height="1"/><rect x="19" y="12" width="1" height="1"/>
+                <rect x="1" y="13" width="1" height="1"/><rect x="5" y="13" width="1" height="1"/><rect x="8" y="13" width="1" height="1"/><rect x="12" y="13" width="1" height="1"/><rect x="16" y="13" width="1" height="1"/><rect x="20" y="13" width="1" height="1"/>
+                <rect x="8" y="14" width="1" height="1"/><rect x="11" y="14" width="1" height="1"/><rect x="14" y="14" width="1" height="1"/><rect x="17" y="14" width="1" height="1"/>
+                <rect x="9" y="15" width="1" height="1"/><rect x="13" y="15" width="1" height="1"/><rect x="15" y="15" width="1" height="1"/><rect x="18" y="15" width="1" height="1"/><rect x="20" y="15" width="1" height="1"/>
+                <rect x="8" y="16" width="1" height="1"/><rect x="10" y="16" width="1" height="1"/><rect x="12" y="16" width="1" height="1"/><rect x="14" y="16" width="1" height="1"/><rect x="17" y="16" width="1" height="1"/><rect x="19" y="16" width="1" height="1"/>
+                <rect x="9" y="17" width="1" height="1"/><rect x="11" y="17" width="1" height="1"/><rect x="13" y="17" width="1" height="1"/><rect x="16" y="17" width="1" height="1"/><rect x="18" y="17" width="1" height="1"/><rect x="20" y="17" width="1" height="1"/>
+                <rect x="8" y="18" width="1" height="1"/><rect x="10" y="18" width="1" height="1"/><rect x="13" y="18" width="1" height="1"/><rect x="15" y="18" width="1" height="1"/><rect x="17" y="18" width="1" height="1"/>
+                <rect x="9" y="19" width="1" height="1"/><rect x="12" y="19" width="1" height="1"/><rect x="14" y="19" width="1" height="1"/><rect x="18" y="19" width="1" height="1"/>
+                <rect x="8" y="20" width="1" height="1"/><rect x="11" y="20" width="1" height="1"/><rect x="13" y="20" width="1" height="1"/><rect x="16" y="20" width="1" height="1"/><rect x="19" y="20" width="1" height="1"/>
+              </g>
+            </svg>
+          </div>
+          <div class="flex-1 pb-1">
+            <div class="text-xs uppercase tracking-widest opacity-60 mb-2">Reserved zone</div>
+            <div id="pass-zone" class="text-3xl font-bold mb-1">A · 47</div>
+            <div class="text-sm opacity-70" id="pass-pricing">AED 20.00 · Confirmed</div>
+          </div>
+        </div>
+
+        <!-- Perforation -->
+        <div class="my-7 flex items-center gap-2">
+          <div class="w-3 h-3 rounded-full" style="background: white; opacity: 0.05;"></div>
+          <div class="flex-1 border-t border-dashed border-white/15"></div>
+          <div class="w-3 h-3 rounded-full" style="background: white; opacity: 0.05;"></div>
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between"><span class="opacity-60">Event</span><span id="pass-event" class="font-medium text-right max-w-[60%]"></span></div>
+          <div class="flex justify-between"><span class="opacity-60">Date</span><span id="pass-date" class="font-medium"></span></div>
+          <div class="flex justify-between"><span class="opacity-60">Plate</span><span id="pass-plate" class="font-medium"></span></div>
+          <div class="flex justify-between"><span class="opacity-60">Booking ID</span><span id="pass-id" class="font-mono text-xs opacity-80"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="card p-6 mt-6">
+      <div class="font-semibold mb-3">On the day of the event</div>
+      <ol class="space-y-3 text-sm text-pp-muted">
+        <li class="flex gap-3"><span class="flex-shrink-0 w-6 h-6 rounded-full bg-pp-blue-50 text-pp-blue text-xs font-bold flex items-center justify-center">1</span><span>Drive to the signed <strong class="text-pp-charcoal">Reserved Zone A</strong> entrance.</span></li>
+        <li class="flex gap-3"><span class="flex-shrink-0 w-6 h-6 rounded-full bg-pp-blue-50 text-pp-blue text-xs font-bold flex items-center justify-center">2</span><span>Show the QR code on this pass to the parking attendant.</span></li>
+        <li class="flex gap-3"><span class="flex-shrink-0 w-6 h-6 rounded-full bg-pp-blue-50 text-pp-blue text-xs font-bold flex items-center justify-center">3</span><span>If your phone is dead, your <strong class="text-pp-charcoal">plate number serves as fallback</strong> identification.</span></li>
+      </ol>
+    </div>
+
+    <div class="flex gap-3 mt-6">
+      <button onclick="showToast('Pass downloaded')" class="btn-ghost flex-1 inline-flex items-center justify-center gap-2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download pass
+      </button>
+      <button onclick="showToast('Added to wallet')" class="btn-ghost flex-1 inline-flex items-center justify-center gap-2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 12V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-1m-2-2a2 2 0 1 1 0-4h2v4h-2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Add to wallet
+      </button>
+    </div>
+
+    <button onclick="navigate('customer-events')" class="w-full text-center text-sm font-semibold text-pp-muted hover:text-pp-charcoal transition mt-8">
+      Browse other events
+    </button>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<!-- SCREEN: VENUE DASHBOARD -->
+<!-- =================================================================== -->
+<section id="screen-venue-dashboard" class="screen bg-pp-light-2">
+  <div data-app-header></div>
+
+  <div class="max-w-7xl mx-auto px-6 py-10 grid lg:grid-cols-12 gap-8">
+    <!-- Sidebar -->
+    <aside class="lg:col-span-3">
+      <div class="card p-3">
+        <div class="px-3 py-2 mb-2">
+          <div class="text-xs uppercase tracking-widest text-pp-muted font-semibold">Sample venue</div>
+          <div class="font-bold">Operations console</div>
+        </div>
+        <nav class="space-y-1">
+          <div class="nav-item active">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 13h8V3H3v10Zm10 8h8V11h-8v10Zm0-18h8v6h-8V3ZM3 21h8v-6H3v6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Dashboard
+          </div>
+          <div class="nav-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M8 2v4m8-4v4M3 10h18M5 6h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Events
+          </div>
+          <div class="nav-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 11H4l8-9 8 9h-5v9H9v-9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Zones
+          </div>
+          <div class="nav-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18M7 16l4-4 4 4 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Reports
+          </div>
+          <div class="nav-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Settings
+          </div>
+        </nav>
+      </div>
+
+      <div class="card p-5 mt-4 bg-pp-charcoal text-black border-0">
+        <div class="text-xs uppercase tracking-widest opacity-60 mb-2">Live</div>
+        <div class="flex items-center gap-2 mb-4"><div class="pulse-dot"></div><span class="text-sm">Real-time bookings</span></div>
+        <div id="live-feed" class="space-y-2 text-xs">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="lg:col-span-9">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold tracking-tight mb-1">Welcome back.</h1>
+        <p class="text-pp-muted">Here's what's happening across your reserved parking zones.</p>
+      </div>
+
+      <!-- Stats row -->
+      <div class="grid md:grid-cols-4 gap-4 mb-8">
+        <div class="card p-5">
+          <div class="text-xs uppercase tracking-widest text-pp-muted font-semibold mb-2">Active events</div>
+          <div class="text-3xl font-bold" id="stat-active">4</div>
+          <div class="text-xs text-pp-muted mt-1">This month</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs uppercase tracking-widest text-pp-muted font-semibold mb-2">Total bookings</div>
+          <div class="text-3xl font-bold" id="stat-bookings">0</div>
+          <div class="text-xs text-pp-muted mt-1">Across all events</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs uppercase tracking-widest text-pp-muted font-semibold mb-2">Venue revenue</div>
+          <div class="text-3xl font-bold text-pp-blue" id="stat-revenue">AED 0</div>
+          <div class="text-xs text-pp-muted mt-1">80% of bookings</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs uppercase tracking-widest text-pp-muted font-semibold mb-2">Avg occupancy</div>
+          <div class="text-3xl font-bold" id="stat-occupancy">0%</div>
+          <div class="text-xs text-pp-muted mt-1">Reserved zone fill</div>
+        </div>
+      </div>
+
+      <!-- Events list -->
+      <div class="card p-6">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <div class="font-bold text-lg">Upcoming events</div>
+            <div class="text-sm text-pp-muted">Click an event to manage its reserved zone</div>
+          </div>
+          <div class="flex gap-1.5">
+            <div class="tab active">Upcoming</div>
+            <div class="tab">Past</div>
+          </div>
+        </div>
+        <div id="venue-events-list" class="divide-y divide-pp-light/80">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </main>
+  </div>
+</section>
+
+<!-- =================================================================== -->
+<!-- SCREEN: VENUE EVENT DETAIL -->
+<!-- =================================================================== -->
+<section id="screen-venue-event" class="screen bg-pp-light-2">
+  <div data-app-header></div>
+
+  <div class="max-w-7xl mx-auto px-6 py-10">
+    <button onclick="navigate('venue-dashboard')" class="text-sm font-medium text-pp-muted hover:text-pp-charcoal transition flex items-center gap-1.5 mb-6">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to dashboard
+    </button>
+
+    <div class="grid lg:grid-cols-12 gap-6">
+      <!-- Main content -->
+      <div class="lg:col-span-8 space-y-6">
+        <!-- Event header -->
+        <div class="card p-8">
+          <div class="flex items-start justify-between gap-4 mb-1">
+            <div>
+              <div class="flex items-center gap-2 mb-2">
+                <span id="ve-type-badge" class="text-xs font-semibold tracking-widest uppercase px-2.5 py-1 rounded-full"></span>
+                <span class="text-xs font-semibold tracking-widest uppercase text-pp-muted" id="ve-status">Upcoming</span>
+              </div>
+              <h1 id="ve-title" class="text-3xl font-bold tracking-tight mb-1"></h1>
+              <p id="ve-meta" class="text-pp-muted"></p>
+            </div>
+            <div class="flex items-center gap-2"><div class="pulse-dot"></div><span class="text-xs font-semibold uppercase tracking-widest text-pp-muted">Live</span></div>
+          </div>
+        </div>
+
+        <!-- Zone allocation -->
+        <div class="card p-8">
+          <div class="mb-6">
+            <div class="text-xs font-semibold tracking-widest uppercase text-pp-blue mb-2">Allocate reserved zone</div>
+            <h2 class="text-xl font-bold tracking-tight mb-1">Zone size</h2>
+            <p class="text-sm text-pp-muted">Adjust the number of spaces ParkPass can sell for this event. The rest of your parking remains free.</p>
+          </div>
+
+          <div class="bg-pp-light-2 rounded-2xl p-6 mb-6">
+            <div class="flex items-baseline justify-between mb-5">
+              <div>
+                <div class="text-5xl font-bold" id="zone-size-display">200</div>
+                <div class="text-sm text-pp-muted mt-1">reserved spaces</div>
+              </div>
+              <div class="text-right">
+                <div class="text-2xl font-bold text-pp-blue" id="zone-pct">3.3%</div>
+                <div class="text-xs text-pp-muted">of total venue capacity</div>
+              </div>
+            </div>
+
+            <input id="zone-slider" type="range" min="50" max="500" step="10" value="200" class="zone-slider mb-2" />
+            <div class="flex justify-between text-xs text-pp-muted">
+              <span>50 spaces</span>
+              <span>500 spaces</span>
+            </div>
+          </div>
+
+          <!-- Live revenue calc -->
+          <div class="grid md:grid-cols-3 gap-3">
+            <div class="rounded-xl bg-pp-blue-50 p-5">
+              <div class="text-xs uppercase tracking-widest font-semibold text-pp-blue mb-2">Venue earns</div>
+              <div class="text-2xl font-bold text-pp-charcoal" id="rev-venue">AED 3,200</div>
+              <div class="text-xs text-pp-muted mt-1">at full occupancy</div>
+            </div>
+            <div class="rounded-xl bg-pp-orange-50 p-5">
+              <div class="text-xs uppercase tracking-widest font-semibold text-pp-orange mb-2">ParkPass earns</div>
+              <div class="text-2xl font-bold text-pp-charcoal" id="rev-pp">AED 800</div>
+              <div class="text-xs text-pp-muted mt-1">at full occupancy</div>
+            </div>
+            <div class="rounded-xl bg-pp-light-2 border border-pp-light p-5">
+              <div class="text-xs uppercase tracking-widest font-semibold text-pp-muted mb-2">Total inventory</div>
+              <div class="text-2xl font-bold" id="rev-total">AED 4,000</div>
+              <div class="text-xs text-pp-muted mt-1">200 × AED 20</div>
+            </div>
+          </div>
+
+          <button onclick="saveZone()" class="btn-primary w-full justify-center inline-flex items-center gap-2 mt-6">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5L20 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Save zone size
+          </button>
+        </div>
+
+        <!-- Live bookings -->
+        <div class="card p-8">
+          <div class="flex items-center justify-between mb-5">
+            <div>
+              <div class="text-xs font-semibold tracking-widest uppercase text-pp-blue mb-2">Live bookings</div>
+              <h2 class="text-xl font-bold tracking-tight"><span id="bookings-count">0</span> confirmed</h2>
+            </div>
+            <div class="flex items-center gap-2"><div class="pulse-dot"></div><span class="text-xs font-semibold uppercase tracking-widest text-pp-muted">Updating</span></div>
+          </div>
+
+          <div class="overflow-x-auto -mx-2">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-xs uppercase tracking-widest text-pp-muted">
+                  <th class="px-2 py-2 font-semibold">Booked</th>
+                  <th class="px-2 py-2 font-semibold">Name</th>
+                  <th class="px-2 py-2 font-semibold">Plate</th>
+                  <th class="px-2 py-2 font-semibold hidden md:table-cell">Email</th>
+                  <th class="px-2 py-2 font-semibold">Spot</th>
+                  <th class="px-2 py-2 font-semibold text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody id="bookings-table">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="lg:col-span-4 space-y-6">
+        <div class="card p-6">
+          <div class="text-xs uppercase tracking-widest text-pp-muted font-semibold mb-5">Capacity</div>
+          <div class="mb-3 flex items-baseline justify-between">
+            <div>
+              <span class="text-3xl font-bold" id="cap-booked">0</span>
+              <span class="text-pp-muted">/ <span id="cap-total">200</span></span>
+            </div>
+            <div class="text-sm font-semibold text-pp-blue" id="cap-pct">0%</div>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="cap-bar" style="width: 0%"></div></div>
+          <div class="grid grid-cols-2 gap-3 mt-6 pt-6 border-t border-pp-light">
+            <div>
+              <div class="text-xs uppercase tracking-widest text-pp-muted font-semibold mb-1">Available</div>
+              <div class="text-xl font-bold" id="cap-available">200</div>
+            </div>
+            <div>
+              <div class="text-xs uppercase tracking-widest text-pp-muted font-semibold mb-1">Earned so far</div>
+              <div class="text-xl font-bold text-pp-blue" id="cap-earned">AED 0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <div class="text-xs uppercase tracking-widest text-pp-muted font-semibold mb-3">Operational checklist</div>
+          <ul class="space-y-3 text-sm">
+            <li class="flex gap-3">
+              <span class="flex-shrink-0 w-5 h-5 rounded-full bg-pp-blue text-white flex items-center justify-center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5L20 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span>Reserved zone marked with cones and signage</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex-shrink-0 w-5 h-5 rounded-full bg-pp-blue text-white flex items-center justify-center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5L20 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span>Two attendants briefed on QR scanning</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex-shrink-0 w-5 h-5 rounded-full border-2 border-pp-light"></span>
+              <span class="text-pp-muted">Pre-event walkthrough scheduled (T-2 days)</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="flex-shrink-0 w-5 h-5 rounded-full border-2 border-pp-light"></span>
+              <span class="text-pp-muted">Plate-list backup printed for event day</span>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script>
+// =====================================================================
+// STATE + MOCK DATA
+// =====================================================================
+const state = {
+  currentScreen: 'landing',
+  currentEventId: null,
+  zoneSize: 200,
+  totalCapacity: 6000,
+  pricePerBooking: 20,
+  venueShare: 16,
+  ppShare: 4,
+  customerBooking: { name: '', plate: '', email: '', eventId: null }
+};
+
+// Each event has its own bookings count (mocked) and zone size
+const events = [
+  {
+    id: 'evt-1',
+    title: 'Live concert',
+    type: 'Concert',
+    typeColor: 'blue',
+    venue: 'Sample venue',
+    dateLabel: 'Friday, Dec 12',
+    timeLabel: '8:00 PM',
+    fullDate: 'Fri 12 Dec · 8:00 PM',
+    zoneSize: 200,
+    booked: 187,
+    status: 'upcoming',
+    description: 'Touring artist, indoor arena format.'
+  },
+  {
+    id: 'evt-2',
+    title: 'Tennis open semifinals',
+    type: 'Sports',
+    typeColor: 'orange',
+    venue: 'Sample venue',
+    dateLabel: 'Saturday, Dec 13',
+    timeLabel: '3:00 PM',
+    fullDate: 'Sat 13 Dec · 3:00 PM',
+    zoneSize: 200,
+    booked: 134,
+    status: 'upcoming',
+    description: 'Two semifinal matches back to back.'
+  },
+  {
+    id: 'evt-3',
+    title: 'International auto exhibition',
+    type: 'Exhibition',
+    typeColor: 'charcoal',
+    venue: 'Sample venue',
+    dateLabel: 'Wednesday, Dec 17',
+    timeLabel: '10:00 AM',
+    fullDate: 'Wed 17 Dec · 10:00 AM',
+    zoneSize: 150,
+    booked: 45,
+    status: 'upcoming',
+    description: 'Three-day exhibition, opening day.'
+  },
+  {
+    id: 'evt-4',
+    title: 'Family arena show',
+    type: 'Family show',
+    typeColor: 'orange',
+    venue: 'Sample venue',
+    dateLabel: 'Sunday, Dec 21',
+    timeLabel: '4:00 PM',
+    fullDate: 'Sun 21 Dec · 4:00 PM',
+    zoneSize: 200,
+    booked: 92,
+    status: 'upcoming',
+    description: 'Live performance designed for families.'
+  }
+];
+
+// Live activity feed (rotating)
+const liveActivity = [
+  { name: 'Aisha M.',   plate: 'F · 1234', event: 'Live concert',         time: '2 min ago' },
+  { name: 'Jamal K.',   plate: 'D · 9876', event: 'Tennis semifinals',    time: '5 min ago' },
+  { name: 'Rohan P.',   plate: 'A · 4452', event: 'Live concert',         time: '8 min ago' },
+  { name: 'Mariam S.',  plate: 'R · 7821', event: 'Family arena show',    time: '12 min ago' }
+];
+
+// Sample plates for the bookings table on event detail page
+const samplePlates = [
+  { name: 'Aisha Malik',     plate: 'F · 1234', email: 'a***@gmail.com',   spot: 'A · 47',  mins: 2 },
+  { name: 'Jamal Khoury',    plate: 'D · 9876', email: 'j***@nyu.edu',     spot: 'A · 12',  mins: 5 },
+  { name: 'Rohan Patel',     plate: 'A · 4452', email: 'r***@outlook.com', spot: 'A · 89',  mins: 8 },
+  { name: 'Mariam Saeed',    plate: 'R · 7821', email: 'm***@gmail.com',   spot: 'A · 33',  mins: 14 },
+  { name: 'Salem Al Hosani', plate: 'B · 2103', email: 's***@yahoo.com',   spot: 'A · 67',  mins: 21 },
+  { name: 'Kareem Hassan',   plate: 'X · 5519', email: 'k***@gmail.com',   spot: 'A · 102', mins: 28 },
+  { name: 'Hala Nasser',     plate: 'M · 0044', email: 'h***@hotmail.com', spot: 'A · 18',  mins: 36 }
+];
+
+// =====================================================================
+// NAVIGATION + APP HEADER INJECTION
+// =====================================================================
+function navigate(screen, params = {}) {
+  // Hide all
+  document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+
+  // Set new state
+  state.currentScreen = screen;
+  if (params.eventId) state.currentEventId = params.eventId;
+
+  // Show target
+  const target = document.getElementById('screen-' + screen);
+  if (target) {
+    target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    // Inject app header where needed
+    target.querySelectorAll('[data-app-header]').forEach(injectAppHeader);
+    // Always refresh header labels so mode switches reflect immediately
+    updateAppHeader();
+    // Render content per screen
+    if (screen === 'customer-events') renderCustomerEvents();
+    if (screen === 'customer-book')   renderCustomerBook();
+    if (screen === 'customer-pass')   renderCustomerPass();
+    if (screen === 'venue-dashboard') renderVenueDashboard();
+    if (screen === 'venue-event')     renderVenueEvent();
+  }
+}
+
+function injectAppHeader(host) {
+  if (host.dataset.injected) return;
+  const tpl = document.getElementById('tpl-app-header').content.cloneNode(true);
+  host.appendChild(tpl);
+  host.dataset.injected = '1';
+}
+
+function updateAppHeader() {
+  const isCustomer = state.currentScreen.startsWith('customer');
+  document.querySelectorAll('[data-mode-label]').forEach(el => {
+    el.textContent = isCustomer ? 'Attendee view' : 'Venue console';
+  });
+  document.querySelectorAll('[data-mode-pill]').forEach(el => {
+    if (isCustomer) {
+      el.className = 'hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-pp-blue-50 text-pp-blue';
+      el.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-pp-blue"></span> Attendee mode';
+    } else {
+      el.className = 'hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-pp-orange-50 text-pp-orange';
+      el.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-pp-orange"></span> Venue mode';
+    }
+  });
+  document.querySelectorAll('[data-switch-label]').forEach(el => {
+    el.textContent = isCustomer ? 'Switch to venue' : 'Switch to attendee';
+  });
+}
+
+function switchMode() {
+  const isCustomer = state.currentScreen.startsWith('customer');
+  navigate(isCustomer ? 'venue-dashboard' : 'customer-events');
+  // Belt and suspenders: refresh header on next tick after navigation completes
+  requestAnimationFrame(() => updateAppHeader());
+}
+
+function resetDemo() {
+  state.zoneSize = 200;
+  state.currentEventId = null;
+  state.customerBooking = { name: '', plate: '', email: '', eventId: null };
+  // Restore booked counts to defaults
+  events[0].booked = 187; events[0].zoneSize = 200;
+  events[1].booked = 134; events[1].zoneSize = 200;
+  events[2].booked = 45;  events[2].zoneSize = 150;
+  events[3].booked = 92;  events[3].zoneSize = 200;
+  navigate('landing');
+  showToast('Demo reset');
+}
+
+// =====================================================================
+// CUSTOMER: EVENTS LIST
+// =====================================================================
+function renderCustomerEvents() {
+  const list = document.getElementById('customer-events-list');
+  const typeColors = {
+    blue:     'bg-pp-blue-50 text-pp-blue',
+    orange:   'bg-pp-orange-50 text-pp-orange',
+    charcoal: 'bg-pp-light-2 text-pp-charcoal'
+  };
+  list.innerHTML = events.map(e => {
+    const remaining = e.zoneSize - e.booked;
+    const fillPct = Math.round((e.booked / e.zoneSize) * 100);
+    const lowStock = remaining <= 30;
+    return `
+      <div class="card card-hover p-6 cursor-pointer" onclick="startBooking('${e.id}')">
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-xs font-semibold tracking-widest uppercase px-2.5 py-1 rounded-full ${typeColors[e.typeColor]}">${e.type}</span>
+          ${lowStock ? '<span class="text-xs font-semibold text-pp-orange">Limited spaces</span>' : '<span class="text-xs text-pp-muted">' + remaining + ' spaces left</span>'}
+        </div>
+        <h3 class="text-xl font-bold tracking-tight mb-1">${e.title}</h3>
+        <p class="text-sm text-pp-muted mb-5">${e.dateLabel} · ${e.timeLabel} · ${e.venue}</p>
+        <div class="progress-track mb-4"><div class="progress-fill" style="width: ${fillPct}%"></div></div>
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs text-pp-muted">Reserved parking</div>
+            <div class="text-2xl font-bold">AED 20</div>
+          </div>
+          <button class="btn-primary inline-flex items-center gap-2">
+            Reserve
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function startBooking(eventId) {
+  state.currentEventId = eventId;
+  state.customerBooking.eventId = eventId;
+  navigate('customer-book');
+}
+
+// =====================================================================
+// CUSTOMER: BOOKING PAGE
+// =====================================================================
+function renderCustomerBook() {
+  const e = events.find(x => x.id === state.currentEventId);
+  if (!e) { navigate('customer-events'); return; }
+  document.getElementById('book-event-title').textContent = e.title;
+  document.getElementById('book-event-meta').textContent = `${e.fullDate} · ${e.venue}`;
+  // Reset button state
+  document.getElementById('btn-pay-text').textContent = 'Pay AED 20';
+  document.getElementById('btn-pay-spinner').classList.add('hidden');
+  document.getElementById('btn-pay').disabled = false;
+}
+
+function completeBooking() {
+  const name  = document.getElementById('input-name').value.trim();
+  const plate = document.getElementById('input-plate').value.trim();
+  const email = document.getElementById('input-email').value.trim();
+  if (!name)  { showToast('Please enter your full name'); return; }
+  if (!plate) { showToast('Please enter a vehicle plate'); return; }
+  if (!email || !email.includes('@')) { showToast('Please enter a valid email'); return; }
+
+  state.customerBooking.name  = name;
+  state.customerBooking.plate = plate;
+  state.customerBooking.email = email;
+
+  // Simulate processing
+  const btn = document.getElementById('btn-pay');
+  document.getElementById('btn-pay-text').textContent = 'Processing';
+  document.getElementById('btn-pay-spinner').classList.remove('hidden');
+  btn.disabled = true;
+
+  setTimeout(() => {
+    // Increment booked count for the event so dashboard reflects it
+    const e = events.find(x => x.id === state.currentEventId);
+    if (e && e.booked < e.zoneSize) e.booked += 1;
+
+    // Push the booking onto the live activity feed at the top
+    liveActivity.unshift({
+      name: name,
+      plate: plate,
+      event: e ? e.title : 'Unknown event',
+      time: 'just now',
+      isUser: true
+    });
+    // Keep the feed at a sensible length
+    if (liveActivity.length > 6) liveActivity.length = 6;
+
+    // Push the booking onto the per-event bookings table at the top
+    const masked = email.length > 1 ? email[0] + '***' + email.slice(email.indexOf('@')) : email;
+    const spot = `A · ${Math.floor(Math.random() * (e ? e.zoneSize : 200)) + 1}`;
+    samplePlates.unshift({
+      plate: plate,
+      name: name,
+      email: masked,
+      spot: spot,
+      mins: 0,
+      eventId: state.currentEventId,
+      isUser: true
+    });
+    if (samplePlates.length > 12) samplePlates.length = 12;
+
+    // Save the spot for the pass page to read
+    state.customerBooking.spot = spot;
+
+    navigate('customer-pass');
+  }, 1100);
+}
+
+// =====================================================================
+// CUSTOMER: PASS / CONFIRMATION
+// =====================================================================
+function renderCustomerPass() {
+  const e = events.find(x => x.id === state.currentEventId);
+  if (!e) { navigate('customer-events'); return; }
+  document.getElementById('pass-confirmation-text').innerHTML = `Booking confirmed for <strong class="text-pp-charcoal">${e.title}</strong>. Your QR pass is ready.`;
+  document.getElementById('pass-event').textContent = e.title;
+  document.getElementById('pass-date').textContent = e.fullDate;
+  document.getElementById('pass-plate').textContent = state.customerBooking.plate || 'A · 12345';
+  // Generate booking ID
+  const id = 'PP-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+  document.getElementById('pass-id').textContent = id;
+  // Use the spot assigned at booking, or fall back to a random one
+  const spot = state.customerBooking.spot || `A · ${Math.floor(Math.random() * e.zoneSize) + 1}`;
+  document.getElementById('pass-zone').textContent = spot;
+}
+
+// =====================================================================
+// VENUE: DASHBOARD
+// =====================================================================
+function renderVenueDashboard() {
+  // Stats
+  const totalBookings = events.reduce((sum, e) => sum + e.booked, 0);
+  const totalCapacity = events.reduce((sum, e) => sum + e.zoneSize, 0);
+  const venueRevenue = totalBookings * state.venueShare;
+  const occupancy = totalCapacity > 0 ? Math.round((totalBookings / totalCapacity) * 100) : 0;
+
+  animateCount('stat-active', events.length);
+  animateCount('stat-bookings', totalBookings);
+  document.getElementById('stat-revenue').textContent = `AED ${formatNumber(venueRevenue)}`;
+  document.getElementById('stat-occupancy').textContent = `${occupancy}%`;
+
+  // Events list
+  const list = document.getElementById('venue-events-list');
+  const typeColors = {
+    blue:     'bg-pp-blue-50 text-pp-blue',
+    orange:   'bg-pp-orange-50 text-pp-orange',
+    charcoal: 'bg-pp-light-2 text-pp-charcoal'
+  };
+  list.innerHTML = events.map(e => {
+    const fillPct = Math.round((e.booked / e.zoneSize) * 100);
+    const venueEarned = e.booked * state.venueShare;
+    return `
+      <div class="py-4 flex items-center gap-4 cursor-pointer hover:bg-pp-light-2/50 -mx-3 px-3 rounded-lg transition" onclick="openVenueEvent('${e.id}')">
+        <div class="flex-shrink-0 w-1 h-12 rounded-full" style="background: ${e.typeColor === 'blue' ? 'var(--pp-blue)' : e.typeColor === 'orange' ? 'var(--pp-orange)' : 'var(--pp-charcoal)'}"></div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="text-[10px] font-semibold tracking-widest uppercase px-2 py-0.5 rounded ${typeColors[e.typeColor]}">${e.type}</span>
+            <span class="text-xs text-pp-muted">${e.fullDate}</span>
+          </div>
+          <div class="font-semibold truncate">${e.title}</div>
+        </div>
+        <div class="hidden md:block w-40">
+          <div class="text-xs text-pp-muted mb-1.5 flex justify-between"><span>${e.booked}/${e.zoneSize}</span><span class="font-semibold text-pp-charcoal">${fillPct}%</span></div>
+          <div class="progress-track"><div class="progress-fill" style="width: ${fillPct}%"></div></div>
+        </div>
+        <div class="hidden lg:block text-right w-28">
+          <div class="text-xs text-pp-muted">Earned</div>
+          <div class="font-bold text-pp-blue">AED ${formatNumber(venueEarned)}</div>
+        </div>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="text-pp-muted flex-shrink-0"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    `;
+  }).join('');
+
+  // Live feed
+  const feed = document.getElementById('live-feed');
+  feed.innerHTML = liveActivity.map(a => {
+    const name = a.name || '—';
+    const dotClass = a.isUser ? 'bg-pp-orange-50' : 'bg-emerald-400';
+    const dotStyle = a.isUser ? 'background: #FFB286;' : '';
+    const rowClass = a.isUser ? 'border border-pp-orange/40 rounded-md px-1.5 -mx-1.5 py-1.5 mb-1' : 'py-1';
+    return `
+      <div class="flex items-center gap-2 opacity-90 ${rowClass}">
+        <div class="w-1.5 h-1.5 rounded-full ${dotClass} flex-shrink-0" style="${dotStyle}"></div>
+        <span class="font-medium truncate" style="max-width: 90px;">${name}</span>
+        <span class="opacity-50 font-mono text-[10px] flex-shrink-0">${a.plate}</span>
+        <span class="opacity-50 truncate flex-1 text-[10px]">${a.event}</span>
+        <span class="opacity-50 flex-shrink-0 text-[10px]">${a.time}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function openVenueEvent(eventId) {
+  state.currentEventId = eventId;
+  const e = events.find(x => x.id === eventId);
+  if (e) state.zoneSize = e.zoneSize;
+  navigate('venue-event');
+}
+
+// =====================================================================
+// VENUE: EVENT DETAIL
+// =====================================================================
+function renderVenueEvent() {
+  const e = events.find(x => x.id === state.currentEventId);
+  if (!e) { navigate('venue-dashboard'); return; }
+
+  // Header
+  document.getElementById('ve-title').textContent = e.title;
+  document.getElementById('ve-meta').textContent = `${e.fullDate} · ${e.venue}`;
+  const typeColors = {
+    blue:     'bg-pp-blue-50 text-pp-blue',
+    orange:   'bg-pp-orange-50 text-pp-orange',
+    charcoal: 'bg-pp-light-2 text-pp-charcoal'
+  };
+  const badge = document.getElementById('ve-type-badge');
+  badge.textContent = e.type;
+  badge.className = `text-xs font-semibold tracking-widest uppercase px-2.5 py-1 rounded-full ${typeColors[e.typeColor]}`;
+
+  // Slider state
+  const slider = document.getElementById('zone-slider');
+  slider.value = e.zoneSize;
+  state.zoneSize = e.zoneSize;
+  updateZoneCalc();
+
+  // Slider handler
+  slider.oninput = () => {
+    state.zoneSize = parseInt(slider.value);
+    updateZoneCalc();
+  };
+
+  // Capacity sidebar
+  updateCapacityCard();
+
+  // Bookings table
+  renderBookingsTable();
+}
+
+function updateZoneCalc() {
+  const z = state.zoneSize;
+  const venueEarn = z * state.venueShare;
+  const ppEarn = z * state.ppShare;
+  const total = z * state.pricePerBooking;
+  const pct = ((z / state.totalCapacity) * 100).toFixed(1);
+
+  document.getElementById('zone-size-display').textContent = z;
+  document.getElementById('zone-pct').textContent = pct + '%';
+  document.getElementById('rev-venue').textContent = `AED ${formatNumber(venueEarn)}`;
+  document.getElementById('rev-pp').textContent = `AED ${formatNumber(ppEarn)}`;
+  document.getElementById('rev-total').textContent = `AED ${formatNumber(total)}`;
+  // Subtitle for total inventory
+  document.querySelector('#rev-total + .text-xs').textContent = `${z} × AED 20`;
+}
+
+function updateCapacityCard() {
+  const e = events.find(x => x.id === state.currentEventId);
+  if (!e) return;
+  const pct = Math.round((e.booked / e.zoneSize) * 100);
+  document.getElementById('cap-booked').textContent = e.booked;
+  document.getElementById('cap-total').textContent = e.zoneSize;
+  document.getElementById('cap-pct').textContent = pct + '%';
+  document.getElementById('cap-bar').style.width = pct + '%';
+  document.getElementById('cap-available').textContent = e.zoneSize - e.booked;
+  document.getElementById('cap-earned').textContent = `AED ${formatNumber(e.booked * state.venueShare)}`;
+  document.getElementById('bookings-count').textContent = e.booked;
+}
+
+function renderBookingsTable() {
+  const tbody = document.getElementById('bookings-table');
+  tbody.innerHTML = samplePlates.map(b => {
+    const timeLabel = b.mins === 0 ? 'just now' : `${b.mins} min ago`;
+    const rowClass = b.isUser ? 'border-t border-pp-orange/40 bg-pp-orange-50/40' : 'border-t border-pp-light/60';
+    const statusBadge = b.isUser
+      ? '<span class="inline-flex items-center gap-1.5 text-xs font-semibold text-pp-orange"><span class="w-1.5 h-1.5 rounded-full" style="background: var(--pp-orange);"></span>Your booking</span>'
+      : '<span class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Confirmed</span>';
+    return `
+    <tr class="${rowClass}">
+      <td class="px-2 py-3 text-pp-muted">${timeLabel}</td>
+      <td class="px-2 py-3 font-medium">${b.name || '—'}</td>
+      <td class="px-2 py-3 font-mono">${b.plate}</td>
+      <td class="px-2 py-3 text-pp-muted hidden md:table-cell">${b.email}</td>
+      <td class="px-2 py-3 font-mono">${b.spot}</td>
+      <td class="px-2 py-3 text-right">${statusBadge}</td>
+    </tr>
+  `;}).join('');
+}
+
+function saveZone() {
+  const e = events.find(x => x.id === state.currentEventId);
+  if (e) {
+    e.zoneSize = state.zoneSize;
+    // Cap booked at new zone size
+    if (e.booked > e.zoneSize) e.booked = e.zoneSize;
+    updateCapacityCard();
+    showToast(`Zone updated to ${state.zoneSize} spaces`);
+  }
+}
+
+// =====================================================================
+// UTILITIES
+// =====================================================================
+function formatNumber(n) {
+  return n.toLocaleString('en-US');
+}
+
+function animateCount(id, target) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const start = 0;
+  const duration = 600;
+  const startTime = performance.now();
+  const tick = (now) => {
+    const t = Math.min((now - startTime) / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.round(start + (target - start) * eased);
+    if (t < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// =====================================================================
+// INIT
+// =====================================================================
+document.addEventListener('DOMContentLoaded', () => {
+  // Smooth scroll for landing page anchors
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+});
+</script>
+
+</body>
+</html>
